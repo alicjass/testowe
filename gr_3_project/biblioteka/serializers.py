@@ -132,9 +132,28 @@ class OsobaSerializer(serializers.ModelSerializer):
         model = Osoba
         fields = "__all__"
 
-class StnowiskoSerializer(serializers.ModelSerializer):
+    def validate_imie(self, value):
+        if not value.istitle():
+            raise serializers.ValidationError(
+                "Imię powinno rozpoczynać się wielką literą."
+                )
+        return value
+
+    def validate_nazwisko(self, value):
+        if not value.istitle():
+            raise serializers.ValidationError(
+                "Nazwisko powinno rozpoczynać się wielką literą."
+                )
+        return value
+
+class StanowiskoSerializer(serializers.ModelSerializer):
      class Meta:
         model = Stanowisko
         fields = "__all__"
 
-  #  def validate_imie(self, value):
+    def validate_imie(self, value):
+        if not value.istitle():
+            raise serializers.ValidationError(
+                "Nazwa stanowiska powinna rozpoczynać się wielką literą."
+                )
+        return value
