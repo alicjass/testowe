@@ -10,4 +10,9 @@ urlpatterns = [
     path('osoby/nazwisko_param', views.osoba_name_filter_params),
     path('stanowiska/', views.stanowisko_list),
     path('stanowiska/<int:pk>/', views.stanowisko_detail),
+    #HTML Views
+    path('welcome/', views.welcome_view),
+    path("html/osoby/", views.osoba_list_html, name="osoba-list"),
+    path("html/osoby/<int:id>/", views.osoba_detail_html, name="osoba-detail"),
+    path("html/osoby/dodaj/", views.osoba_create_html, name="osoba-create"),
 ]
