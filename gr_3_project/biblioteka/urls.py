@@ -3,7 +3,11 @@ from . import views
 
 urlpatterns = [
     path('books/', views.book_list),
-    path('books/<int:pk>/', views.book_detail),  # wpisujemy id/pk ksiazki, do ktorej chcemy sie dostac
-    path("books_cbv/", views.BookListView.as_view(), name="book-list"),
-    path("books_cbv/<int:pk>/", views.BookDetailView.as_view(), name="book-detail"),  # cbv od class base view
+    path('books/<int:pk>/', views.book_detail),
+    path('osoby/', views.osoba_list),
+    path('osoby/<int:pk>/', views.osoba_detail),
+    path('osoby/nazwisko/<str:name>/', views.osoba_name_filter_url),
+    path('osoby/nazwisko_param', views.osoba_name_filter_params),
+    path('stanowiska/', views.stanowisko_list),
+    path('stanowiska/<int:pk>/', views.stanowisko_detail),
 ]
