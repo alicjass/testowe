@@ -1,10 +1,11 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .models import Book, Osoba, Stanowisko
 from .serializers import BookSerializer, OsobaSerializer, StanowiskoSerializer
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
+from django.http import Http404
 
 # określamy dostępne metody żądania dla tego endpointu
 @api_view(['GET', "POST"])  # dekorator zawsze przed funkcją
@@ -144,3 +145,70 @@ def stanowisko_list(request):
         return Response(StanowiskoSerializer(Stanowisko.objects.all(),
                                         many = True).data,
                         status = status.HTTP_200_OK)
+
+
+# kod umieszczamy w pliku views.py wybranej aplikacji
+
+from django.http import HttpResponse
+import datetime
+
+
+def welcome_view(request):
+    now = datetime.datetime.now()
+    html = f"""
+        <html><body>
+        Witaj użytkowniku! </br>
+        Aktualna data i czas na serwerze: {now}.
+        </body></html>"""
+    return HttpResponse(html)
+
+
+def osoba_list_html(request):
+    # pobieramy wszystkie obiekty Osoba z bazy poprzez QuerySet
+    osoby = Osoba.objects.all()
+    return render(request,
+                  "biblioteka/osoba/list.html",
+                  {'osoby': osoby})
+
+def osoba_detail_html(request, id):
+    # pobieramy konkretny obiekt Osoba
+    try:
+        osoba = Osoba.objects.get(id=id)
+    except Osoba.DoesNotExist:
+        raise Http404("Obiekt Osoba o podanym id nie istnieje")
+
+    return render(request,
+                  "biblioteka/osoba/detail.html",
+                  {'osoba': osoba})
+
+
+def osoba_create_html(request):
+    stanowiska = Stanowisko.objects.all()  # pobieramy listę stanowisk z bazy
+
+    if request.method == "GET":
+        return render(request, "biblioteka/osoba/create.html", {'stanowiska': stanowiska})
+    elif request.method == "POST":
+        imie = request.POST.get('imie')
+        nazwisko = request.POST.get('nazwisko')
+        plec = request.POST.get('plec')
+        stanowisko_id = request.POST.get('stanowisko')
+
+        if imie and nazwisko and plec and stanowisko_id:
+            # pobieramy obiekt stanowiska
+            try:
+                stanowisko_obj = Stanowisko.objects.get(id=stanowisko_id)
+            except Stanowisko.DoesNotExist:
+                error = "Wybrane stanowisko nie istnieje."
+                return render(request, "biblioteka/osoba/create.html", {'error': error, 'stanowiska': stanowiska})
+
+            # tworzymy nową osobę
+            Osoba.objects.create(
+                imie=imie,
+                nazwisko=nazwisko,
+                plec=plec,
+                stanowisko=stanowisko_obj
+            )
+            return redirect('osoba-list')
+        else:
+            error = "Wszystkie pola są wymagane."
+            return render(request, "biblioteka/osoba/create.html", {'error': error, 'stanowiska': stanowiska})
