@@ -12,6 +12,8 @@ from django.http import Http404
 from .forms import OsobaForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse
+import datetime
 
 from functools import wraps
 
@@ -187,9 +189,6 @@ def stanowisko_list(request):
 
 
 # kod umieszczamy w pliku views.py wybranej aplikacji
-
-from django.http import HttpResponse
-import datetime
 
 
 def welcome_view(request):
