@@ -269,6 +269,7 @@ def osoba_create_django_form(request):
     return render(request,
                   "biblioteka/osoba/create_django.html",
                   {'form': form})
+
 def user_login(request):
     if request.method == "POST":
         username = request.POST.get('username')
